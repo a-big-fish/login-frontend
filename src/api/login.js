@@ -1,0 +1,41 @@
+import request from "./request"
+import PasswordUtils from "@/utils/passwordUtils"
+
+// 登录
+export function login(data) {
+    const username = data.username
+    // 前端hash为了不在网络上明文传输
+    const hashPassword = PasswordUtils.hash(data.password)
+    return request({
+        url: '/user/login',
+        method: 'post',
+        data: {
+            username: username,
+            password: hashPassword
+        }
+    })
+}
+
+// 登出
+export function logout() {
+    return request({
+        url: '/user/logout',
+        method: 'post'
+    })
+}
+
+// 获取用户信息
+export function getUserInfo() {
+    return request({
+        url: '/user/info',
+        method: 'get'
+    })
+}
+
+// 刷新token
+export function refreshToken() {
+    return request({
+        url: '/user/refresh',
+        method: 'post'
+    })
+}
