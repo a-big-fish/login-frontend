@@ -1,9 +1,9 @@
 <template>
   <div class="home-container">
-    <h1>This is WelcomePage  </h1>
+    <h1>欢迎你，管理员！</h1>
     <div class="btnBox1">
       <el-button type = "primary" @click="login">登录</el-button>
-      <el-button type = "warning" @click="logout">退出</el-button>
+      <el-button type = "warning" @click="exit">退出</el-button>
     </div>
 
       
@@ -29,17 +29,6 @@ export default {
       // 强制刷新
       location.reload()
     },
-    logout() {
-      // 使用 Vuex 进行登出
-      this.$store.dispatch('logout')
-      this.showDropdown = false
-
-      // 跳转到首页
-      this.$router.push('/')
-
-      // 显示提示信息
-      this.$message?.success?.('已成功退出登录') || alert('已成功退出登录')
-    }
   }
 }
 </script>

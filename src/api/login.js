@@ -24,8 +24,8 @@ export function logout() {
     })
 }
 
-// 获取用户信息
-export function getUserInfo() {
+// 鉴定token有效性
+export function verifyToken() {
     return request({
         url: '/user/verify',
         method: 'get'

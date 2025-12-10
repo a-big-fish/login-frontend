@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { login as apiLogin, getUserInfo } from '@/api/login'
+import { login as apiLogin, verifyToken } from '@/api/login'
 import router from '@/router'
 
 Vue.use(Vuex)
@@ -181,8 +181,7 @@ export default new Vuex.Store({
 
       try {
         // 调用后端验证token的接口
-        const userInfo = await getUserInfo()
-
+        const userInfo = await verifyToken()
         // 更新用户信息
         commit('SET_USER', { ...userInfo, token })
         return true

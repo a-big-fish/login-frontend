@@ -1,9 +1,8 @@
 <template>
   <div class="home-container">
-    <h1>This is WelcomePage  </h1>
+    <h1>欢迎，{{ user.username }}  </h1>
     <div class="btnBox1">
-      <el-button type = "primary" @click="login">登录</el-button>
-      <el-button type = "warning" @click="logout">退出</el-button>
+      <el-button type = "warning" @click="logout">登出</el-button>
     </div>
 
       
@@ -15,20 +14,14 @@ export default {
   name: "WelcomePage",
   data() {
     return {
-
+      user:{
+        id: '',
+        username: '',
+        token: '',
+      }
     }
   },
   methods: {
-    login(){
-      this.$store.commit("setIsLoggedIn",true)
-      console.log('当前登录状态:', this.$store.getters.isLoggedIn)
-    },
-    exit(){
-      this.$store.commit("setIsLoggedIn",false)
-      console.log('当前登录状态:', this.$store.getters.isLoggedIn)
-      // 强制刷新
-      location.reload()
-    },
     logout() {
       // 使用 Vuex 进行登出
       this.$store.dispatch('logout')
@@ -40,6 +33,11 @@ export default {
       // 显示提示信息
       this.$message?.success?.('已成功退出登录') || alert('已成功退出登录')
     }
+
+  },
+  created(){
+    // 从vuex中加载用户信息到本地
+    this.user = this.$store.getters.currentUser
   }
 }
 </script>

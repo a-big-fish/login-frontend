@@ -18,22 +18,30 @@ const router = new VueRouter({
 })
 
 // 捕获重复导航错误
-const originalPush = VueRouter.prototype.push
-VueRouter.prototype.push = function push(location){
-  return originalPush.call(this, location).catch(err =>{
-    if(err.name !== 'NavigationDuplicated') throw err
-  })
-}
+// 解决编程式路由往同一地址跳转时会报错的情况
+const originalPush = VueRouter.prototype.push;
+const originalReplace = VueRouter.prototype.replace;
+
+// push
+VueRouter.prototype.push = function push(location, onResolve, onReject) {
+  if (onResolve || onReject)
+    return originalPush.call(this, location, onResolve, onReject);
+  return originalPush.call(this, location).catch(err => err);
+};
+
+//replace
+VueRouter.prototype.replace = function push(location, onResolve, onReject) {
+  if (onResolve || onReject)
+    return originalReplace.call(this, location, onResolve, onReject);
+  return originalReplace.call(this, location).catch(err => err);
+};
 
 router.beforeEach((to, from, next) => {
   console.log('=== 路由守卫开始 ===')
-  console.log('localStorage状态:', {
-    token: localStorage.getItem('token'),
-  })
-
 
   const isLoggedIn = store.getters.isLoggedIn
   console.log('当前登录状态:', isLoggedIn);
+  console.log("token:", localStorage.getItem("token"));
 
   // 不用登录的页面
   // 检查是否公开路由
@@ -46,7 +54,9 @@ router.beforeEach((to, from, next) => {
         return to.path.startsWith(route)
       }
       })){
+
       next();
+      console.log('=== 路由守卫结束 ===')
       return;
   }
 
