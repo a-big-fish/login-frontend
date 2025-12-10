@@ -6,7 +6,8 @@ const service = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
     timeout: 5000,
     headers: {
-        "Content-Type":"application/json"
+        "Content-Type":"application/json",
+        "Access-Control-Allow-Origin":"http://localhost:8123"
     },
 })
 
@@ -15,7 +16,7 @@ service.interceptors.request.use(
     config => {
         // 添加token,loading等
         // 从store获取token
-        const token = store.state.user.token;
+        const token = store.state.user.token || localStorage.getItem("token")
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
         }
@@ -32,8 +33,9 @@ service.interceptors.response.use(
         // 后端返回统一格式 {data: {}, message: "", code: 200}
         if(res.code == 200){
             return res.data;
-        }else{
+        } else{
             Message.error(res.message || '请求失败');
+            console.log(res);
             return Promise.reject(new Error(res.message || 'Error'));
         }
     },

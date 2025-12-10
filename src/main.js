@@ -12,13 +12,22 @@ Vue.config.productionTip = false
 Vue.use(ElementUI); // 安装element-ui
 Vue.use(Vuex); // 安装vuex
 
+// 创建vue之前，同步初始化store状态
+// 调用同步的mutation，确保立即有结果
+store.commit("INITIALIZE_FROM_STORAGE")
+console.log('初始化后立即检查 localStorage:', {
+  token: localStorage.getItem('token'),
+})
+
+
+
 // 创建 Vue 实例时添加 store
 new Vue({
   router,
   store, // 注入 store
+  // created的时机可能在创建路由守卫之后，可能会太晚
   created(){
     console.log("页面创建，初始化");
-    this.$store.dispatch("tempInit")
   },
   render: h => h(App),
 }).$mount('#app')

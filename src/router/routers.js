@@ -32,6 +32,12 @@ const routes = [
     name: 'WelcomePage',
     component: () => import('../page/authPage/welcomePage.vue') 
   },
+  {
+    path: '/welcomePage',
+    name: 'WelcomePage',
+    component: () => import('../page/authPage/welcomePage.vue') 
+  },
+  
 
 
 

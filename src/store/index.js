@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { login, getUserInfo } from '@/api/login'
+import { login as apiLogin, getUserInfo } from '@/api/login'
 import router from '@/router'
 
 Vue.use(Vuex)
@@ -10,7 +10,7 @@ export default new Vuex.Store({
     // 用户信息
     user: {
       id: null,
-      name: '',
+      username: '',
       avatar: '',
       token: null
     },
@@ -35,21 +35,34 @@ export default new Vuex.Store({
     getToken: state => state.user.token
   },
 
+  // 同步方法
   mutations: {
-    // 临时更改登录状态
-    setIsLoggedIn(state, status){
-      if(status == "true" || status == true){
-        state.isLoggedIn = true;
-        console.log("当前已登录");
-        localStorage.setItem("isLoggedIn", true)
-        // 还应该存储token等
-        
-      }else{
-        state.isLoggedIn = false;
-        localStorage.setItem("isLoggedIn", false)
+    // 初始化
+    INITIALIZE_FROM_STORAGE(state){
+      const token = localStorage.getItem("token")
+      const isLoggedIn = localStorage.getItem("isLoggedIn")
+      const userInfo = localStorage.getItem("userInfo")
+      console.log("从本地初始化数据");
+      console.log({isLoggedIn, token, userInfo});
+      if(token){
+        state.user.token = token
+        state.isLoggedIn = true
+        if(userInfo){
+          try {
+            const userData = JSON.parse(userInfo)
+            // 保留原有token，合并用户信息
+            state.user = { ...state.user, ...userData }
+          } catch (e) {
+            console.error('用户信息解析失败，使用空对象')
+            // 解析失败时不覆盖现有数据
+          }
+        } else{
+          // 没有token，确保状态是干净的
+          state.user.token = ''
+          state.userInfo = {}
+        }
       }
     },
-
     // 设置用户信息
     SET_USER(state, user) {
       state.user = { ...state.user, ...user }
@@ -65,7 +78,7 @@ export default new Vuex.Store({
     CLEAR_USER(state) {
       state.user = {
         id: null,
-        name: '',
+        username: '',
         avatar: '',
         token: null
       }
@@ -99,49 +112,52 @@ export default new Vuex.Store({
   },
 
   actions: {
-    initializeStore({ commit }) {
-      // 从 localStorage 中读取 isLoggedIn
-      const isLoggedIn = localStorage.getItem("isLoggedIn")
-      commit("setIsLoggedIn", isLoggedIn)
-    },
-    tempInit({commit}, status){
-      // 从 localStorage 中读取 isLoggedIn
-      let isLoggedIn = status
-      console.log("执行1");
-      commit("setIsLoggedIn", isLoggedIn)
-    },
+    // 这里是异步方法，时间上不一定来的及，得在同步方法中初始化
+    // initializeStore({ commit }) {
+    //   // 从 localStorage 中读取 isLoggedIn
+    //   const isLoggedIn = localStorage.getItem("isLoggedIn")
+    //   commit("setIsLoggedIn", isLoggedIn)
+    // },
+    // tempInit({commit}, status){
+    //   // 从 localStorage 中读取 isLoggedIn
+    //   let isLoggedIn = status
+    //   console.log("执行1");
+    //   commit("setIsLoggedIn", isLoggedIn)
+    // },
+
     // -todo 登录操作
     async login({ commit }, loginForm) {
       commit('SET_LOADING', true)
       commit('CLEAR_ERROR')
-
       try {
         // 调用登录API
-        const response = await login(loginForm)
+        const response = await apiLogin(loginForm)
 
         // 假设后端返回格式：{ code: 200, data: { token: 'xxx', user: {} }, message: '登录成功' }
-        const { token, user } = response
 
+        const { id, token, username } = response
         if (token) {
           commit('SET_TOKEN', token)
 
           // 如果有用户信息，一并保存
-          if (user) {
-            commit('SET_USER', { ...user, token })
+          try{
+            commit('SET_USER', { id,token,username })
+          }catch(err){
+            console.log("无用户信息");
           }
 
           // 设置登录状态
           localStorage.setItem('isLoggedIn', 'true')
 
-          commit('SET_LOADING', false)
-          return { token, user }
+          return { token, username }
         } else {
           throw new Error('登录失败：未获取到token')
         }
       } catch (error) {
         commit('SET_ERROR', error.message || '登录失败')
-        commit('SET_LOADING', false)
         throw error
+      } finally{
+        commit('SET_LOADING', false)
       }
     },
 
@@ -158,7 +174,7 @@ export default new Vuex.Store({
     // -todo 验证token有效性
     async validateToken({ commit, state }) {
       const token = state.user.token || localStorage.getItem('token')
-
+      console.log("检验token有效性",token);
       if (!token) {
         return false
       }
@@ -198,6 +214,7 @@ export default new Vuex.Store({
           dispatch('validateToken').catch(() => {
             console.log('Token验证失败，需要重新登录')
           })
+          
         } catch (error) {
           console.error('恢复用户信息失败:', error)
           commit('CLEAR_USER')

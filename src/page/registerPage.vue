@@ -123,6 +123,8 @@
 </template>
 
 <script>
+import { register as apiRegister } from '@/api/register';
+
 export default {
   name: 'RegisterPage',
   data() {
@@ -214,29 +216,37 @@ export default {
           username: this.form.username,
           password: this.form.password,
           email: this.form.email || null,
-          phone: this.form.phone || null,
-          timestamp: Date.now()
+          phone: this.form.phone || null
         }
 
-        // 模拟注册成功
-        await this.simulateRegistration(registerData)
+        // 注册
+        await apiRegister(registerData)
 
         this.$message.success('注册成功！正在跳转...')
 
         // 注册成功后自动登录
-        await this.$store.dispatch('login', {
-          ...registerData,
-          name: registerData.username,
-          avatar: ''
-        })
-
-        // 跳转到首页或登录页
-        setTimeout(() => {
-          this.$router.push('/')
-        }, 1500)
-
+        // 统一使用async/await避免混用then,catch
+        try{
+          await this.$store.dispatch('login', {
+            username: registerData.username,
+            password: registerData.password
+          })
+          console.log("登陆成功，后端正确返回");
+          // 跳转到首页或登录页
+          setTimeout(() => {
+            this.$router.push('/')
+          }, 1500)
+        }catch(loginError){
+          // 注册成功但自动登录失败的特殊处理
+          console.log("注册成功，但自动登录失败:", loginError);
+          this.$message.warning('注册成功，但自动登录失败，请手动登录');
+          this.$router.push('/login'); // 跳转到登录页
+        }
       } catch (error) {
-        this.$message.error(error.message || '注册失败，请稍后重试')
+        // 这里会捕获注册失败的错误（包括"用户名已存在"）
+        // 错误消息已经在拦截器中显示过了
+        // this.$message.error(error.message || '注册失败，请稍后重试')
+        console.log("注册过程失败:", error);
       } finally {
         this.loading = false
       }

@@ -9,9 +9,7 @@ Vue.use(VueRouter)
 // 初始化store - 恢复用户登录状态
 // store.dispatch("init")
 // 创建路由守卫之前初始化store，暂时的
-// 奇怪，为什么刷新以后这里会是undefined
-console.log("123456+++"+localStorage.getItem("isLoggedIn"));
-store.commit('setIsLoggedIn', localStorage.getItem("isLoggedIn"))
+store.commit("INITIALIZE_FROM_STORAGE")
 
 // 路由表，某个路由对应哪个视图组件
 const router = new VueRouter({
@@ -28,6 +26,12 @@ VueRouter.prototype.push = function push(location){
 }
 
 router.beforeEach((to, from, next) => {
+  console.log('=== 路由守卫开始 ===')
+  console.log('localStorage状态:', {
+    token: localStorage.getItem('token'),
+  })
+
+
   const isLoggedIn = store.getters.isLoggedIn
   console.log('当前登录状态:', isLoggedIn);
 
@@ -59,6 +63,7 @@ router.beforeEach((to, from, next) => {
     })
     return
   }
+  console.log('=== 路由守卫结束 ===')
   next();
 })
 

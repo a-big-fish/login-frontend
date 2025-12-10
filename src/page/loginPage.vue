@@ -56,6 +56,8 @@
 </template>
 
 <script>
+import { login as apiLogin } from '@/api/login';
+
 export default {
   name: "LoginPage",
   data() {
@@ -93,13 +95,13 @@ export default {
         try {
           // 登录API调用，传递用户名，密码，加密传输
           // 后端校验返回
-          await this.simulateLogin()
+          // await this.simulateLogin()
 
+          // vuex统一状态管理，vuex里处理登录API请求等
           // 使用Vuex进行登录状态管理，包括登录状态，token保存等
-          await this.$store.dispatch('login', {
-            username: this.loginForm.username,
-            password: this.loginForm.password
-          })
+
+          const res = await this.$store.dispatch('login', this.loginForm)
+          console.log(res);
 
           // 显示成功消息
           this.$message.success('登录成功！')
@@ -107,8 +109,11 @@ export default {
           // 跳转到首页
           this.$router.push('/')
 
-        } catch (error) {
-          this.$message.error('登录失败：' + error.message)
+
+        } catch (loginError) {
+          // 在api的request.js中进行统一处理了，这里可以不写
+          console.log("loginPage出错");
+          this.$message.error('登录失败：' + loginError.message)
         } finally {
           this.loading = false
         }
@@ -127,8 +132,8 @@ export default {
           }
         }, 1000)
       })
-    }
-    
+    },
+
   }
 }
 </script>

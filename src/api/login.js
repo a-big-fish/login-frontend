@@ -11,7 +11,7 @@ export function login(data) {
         method: 'post',
         data: {
             username: username,
-            password: hashPassword
+            passwordHash: hashPassword
         }
     })
 }
@@ -27,7 +27,7 @@ export function logout() {
 // 获取用户信息
 export function getUserInfo() {
     return request({
-        url: '/user/info',
+        url: '/user/verify',
         method: 'get'
     })
 }
