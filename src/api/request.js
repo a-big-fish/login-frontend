@@ -5,6 +5,7 @@ import { Message } from 'element-ui'
 const service = axios.create({
     baseURL: process.env.VUE_APP_API_URL,
     timeout: 5000,
+    timeoutErrorMessage: '请求超时，请稍后重试',
     headers: {
         "Content-Type":"application/json",
         "Access-Control-Allow-Origin":"http://localhost:8123"
@@ -41,7 +42,7 @@ service.interceptors.response.use(
     },
     error => {
         // 处理各种错误情况
-        if(error.response){
+        if (error.response) {
             switch(error.response.status){
                 case 401:
                     // token失效
@@ -63,7 +64,11 @@ service.interceptors.response.use(
                 default:
                     Message.error(error.response.data.message || "未知错误");
             }
-        }else{
+        } else if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
+            // 请求超时
+            Message.error("请求超时，请稍后重试");
+        } else if (!error.response) {
+            // 网络错误（包括断网、DNS解析失败等）
             Message.error("网络错误，请检查网络连接");
         }
         return Promise.reject(error)

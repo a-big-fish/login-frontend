@@ -16,6 +16,18 @@
       v-model="tempLoginStatus" placeholder="输入信息，上方显示"></textarea>
     </div>
       
+
+    <div class="auth_btn">
+      <el-button type="warning" @click="toWelcomePage">点击前往欢迎界面</el-button>
+      <el-button type = "primary" v-permission = "'admin.access'">
+        有权限才能看到的小按钮
+      </el-button>
+      <el-button type = "primary" v-role = "'admin'">
+        嘻嘻，我也是
+      </el-button>
+
+    </div>
+    
   </div>
 </template>
 
@@ -26,7 +38,7 @@ export default {
     return {
       message: "我是一条消息",
       tempLoginStatus: false,
-
+      info: [],
     }
   },
   methods: {
@@ -46,6 +58,22 @@ export default {
         // 登录跳转实际页面
         this.$router.push("/welcomePage")
         
+    },
+    toWelcomePage(){
+      const roles = this.$store.getters.getRoles[0]
+      switch (roles){
+        case "admin":
+          console.log("admin>>>>", roles);
+          this.$router.push("/adminWelcomePage")
+          return;
+        case "user":
+          this.$router.push("/userWelcomePage")
+          return
+        default:
+          this.$router.push("/welcomePage")
+          return
+      }
+
     }
   },
   watch: {
@@ -53,6 +81,9 @@ export default {
       // console.log(newVal);
       this.$store.commit("setIsLoggedIn",newVal)
     }
+  },
+  mounted(){
+    this.info = this.$store.state.user
   }
 }
 </script>

@@ -9,7 +9,7 @@ Vue.use(VueRouter)
 // 初始化store - 恢复用户登录状态
 // store.dispatch("init")
 // 创建路由守卫之前初始化store，暂时的
-store.commit("INITIALIZE_FROM_STORAGE")
+store.commit("RESTORE_FROM_STORAGE")
 
 // 路由表，某个路由对应哪个视图组件
 const router = new VueRouter({

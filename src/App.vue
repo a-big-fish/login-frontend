@@ -49,6 +49,7 @@ export default {
   margin-top: 60px; /* 导航栏高度 */
   padding: 20px;
   min-height: calc(100vh - 60px - 80px); /* 减去导航栏和底部高度 */
+  padding-bottom: 5rem;
 }
 
 .footer{
@@ -62,6 +63,8 @@ export default {
   padding: 20px 0;
   text-align: center;
   border-top: 1px solid #dee2e6;
+  height: 2rem;
+  line-height: 2rem;
 }
 
 </style>

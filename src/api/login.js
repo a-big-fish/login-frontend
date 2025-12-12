@@ -39,3 +39,14 @@ export function refreshToken() {
         method: 'post'
     })
 }
+
+/**
+ * @deprecated since version 2.0
+ */
+// 获取权限信息
+export function fetchUserPermissions(){
+    return request({
+        url: '/user/permissions',
+        method: 'post'
+    })
+}
