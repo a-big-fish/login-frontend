@@ -117,15 +117,19 @@ export default {
         // 加载特效
         this.loading = true
         // 验证码验证
-        
-        const captchaResult = await this.verifyCaptcha()
-        if(captchaResult == null){
-          console.log("验证码错误");
-          this.loading = false
+        try{
+          const captchaResult = await this.verifyCaptcha()
+          if(captchaResult == null){
+            console.log("验证码错误");
+            return
+          }
+          console.log(captchaResult);
+        }catch(err){
+          console.log(err);
           return
+        }finally{
+          this.loading = false
         }
-        console.log(captchaResult);
-        
 
         // 尝试登录
         try {
@@ -184,7 +188,7 @@ export default {
       })
     },1000),
     // 验证验证码
-      async verifyCaptcha(){
+    async verifyCaptcha(){
       const inputCaptcha = this.loginForm.captcha
       console.log("输入验证码为：", inputCaptcha);
       const res = await apiVerifyCaptcha({
