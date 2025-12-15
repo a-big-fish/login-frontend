@@ -47,9 +47,8 @@ export default {
 /* 主要内容区域，避免被固定导航栏遮挡 */
 .main-content {
   margin-top: 60px; /* 导航栏高度 */
-  padding: 20px;
+  padding: 10px;
   min-height: calc(100vh - 60px - 80px); /* 减去导航栏和底部高度 */
-  padding-bottom: 5rem;
 }
 
 .footer{

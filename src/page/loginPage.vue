@@ -34,7 +34,23 @@
               @keyup.enter.native="handleLogin"
             >
             </el-input>
+
           </el-form-item>
+
+          <el-form-item prop="captcha" label="验证码" class="captcha-form-item">
+            <div class="captcha-container">
+              <el-input
+                class="captcha-input"
+                v-model="loginForm.captcha"
+                placeholder="请输入验证码"
+                prefix-icon="el-icon-share"
+                size="medium"
+              >
+              </el-input>
+              <img class="captcha-image" :src="captchaImg" alt="验证码" @click="getCaptcha" />
+            </div>
+          </el-form-item>
+
           <el-form-item>
             <el-button
               type="primary"
@@ -56,7 +72,10 @@
 </template>
 
 <script>
-import { login as apiLogin } from '@/api/login';
+import { 
+  login as apiLogin, 
+  getCaptcha as apiGetCaptcha, 
+  verifyCaptcha as apiVerifyCaptcha } from '@/api/login';
 
 export default {
   name: "LoginPage",
@@ -64,8 +83,11 @@ export default {
     return {
       loginForm: {
         username: '',
-        password: ''
+        password: '',
+        captcha: '',
       },
+      captchaImg: '',
+      captchaKey: '',
       loginRules: {
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
@@ -74,6 +96,9 @@ export default {
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { min: 6, max: 20, message: '密码长度在 6 到 20 个字符', trigger: 'blur' }
+        ],
+        captcha: [
+          { required: true, message: '请输入验证码', trigger: 'blur' }
         ]
       },
       loading: false
@@ -91,7 +116,18 @@ export default {
         }
         // 加载特效
         this.loading = true
+        // 验证码验证
+        
+        const captchaResult = await this.verifyCaptcha()
+        if(captchaResult == null){
+          console.log("验证码错误");
+          this.loading = false
+          return
+        }
+        console.log(captchaResult);
+        
 
+        // 尝试登录
         try {
           // 登录API调用，传递用户名，密码，加密传输
           // 后端校验返回
@@ -133,9 +169,48 @@ export default {
         }, 1000)
       })
     },
-
+    
+    // 获取验证码，防抖使用
+    getCaptcha: debounce(function(){
+      apiGetCaptcha()
+      .then(res => {
+        const key = res.key
+        const image = res.image
+        this.captchaImg = image == null ? "" : image
+        this.captchaKey = key
+      })
+      .catch(err => {
+        console.log(err);
+      })
+    },1000),
+    // 验证验证码
+      async verifyCaptcha(){
+      const inputCaptcha = this.loginForm.captcha
+      console.log("输入验证码为：", inputCaptcha);
+      const res = await apiVerifyCaptcha({
+        key: this.captchaKey,
+        code: inputCaptcha
+      })
+      return res
+    }
+  },
+  created() {
+    this.getCaptcha()
+  },
+  mounted() {
+    this.getCaptcha()
+  },
+}
+// 配置防抖
+function debounce(func,delay){
+  let timeout;
+  return function(...args){
+    const context = this
+    clearTimeout(timeout)
+    timeout = setTimeout(() => func.apply(context, args), delay)
   }
 }
+
 </script>
 
 <style scoped>
@@ -183,6 +258,8 @@ export default {
   color: #555;
   font-weight: 500;
   padding-bottom: 8px;
+  display: block;
+  text-align: left;
 }
 
 .login-card .el-input__inner {
@@ -251,5 +328,35 @@ export default {
     align-items: flex-start;
     padding-top: 50px;
   }
+}
+.captcha-section {
+  margin-bottom: 22px;
+}
+
+.captcha-label {
+  display: block;
+  color: #555;
+  font-weight: 500;
+  padding-bottom: 8px;
+  font-size: 14px;
+}
+
+.captcha-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.captcha-input {
+  flex: 1;
+}
+
+.captcha-image {
+  width: 130px;
+  height: 36px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  cursor: pointer;
+  background-color: #f5f5f5;
 }
 </style>

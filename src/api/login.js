@@ -50,3 +50,20 @@ export function fetchUserPermissions(){
         method: 'post'
     })
 }
+
+// 获取验证码
+export function getCaptcha(){
+    return request({
+        url: '/user/generateCaptcha',
+        method: 'post'
+    })
+}
+
+// 验证验证码
+export function verifyCaptcha(data){
+    return request({
+        url: '/user/verifyCaptcha',
+        method: 'post',
+        data: data,
+    })
+}
