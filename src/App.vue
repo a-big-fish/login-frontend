@@ -62,8 +62,8 @@ export default {
   padding: 20px 0;
   text-align: center;
   border-top: 1px solid #dee2e6;
-  height: 2rem;
-  line-height: 2rem;
+  height: 1vh;
+  line-height: 1vh;
 }
 
 </style>

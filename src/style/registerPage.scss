@@ -1,0 +1,319 @@
+/* 外层包装，占据整个内容区域 */
+.register-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: inherit; /* 继承main-content的最小高度 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* 注册容器 */
+.register-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32rem;
+  padding: 20px;
+}
+
+/* 注册卡片 */
+.register-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+  padding: 25px 20px;
+  width: 100%;
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.register-card:hover {
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+/* 页面标题 */
+.register-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.register-title {
+  font-size: 22px;
+  color: #2c3e50;
+  margin: 0 0 8px 0;
+  font-weight: 600;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.register-subtitle {
+  font-size: 12px;
+  color: #7f8c8d;
+  margin: 0;
+  font-weight: 400;
+}
+
+/* 注册表单 */
+.register-form {
+  margin-top: 12px;
+  width: 100%;
+}
+
+/* 紧凑的表单项 */
+.form-item-compact {
+  margin-bottom: 12px !important;
+  /* display: flex; */
+  width: 90%;
+  
+  align-items: center;
+}
+
+.form-item-compact .el-form-item__label {
+  font-size: 13px;
+  color: #606266;
+  font-weight: 500;
+  line-height: 40px;
+  padding: 0 12px 0 0;
+  text-align: left;
+  position: relative;
+  margin-right: 5px;
+}
+
+/* 必填项星号样式调整 */
+.form-item-compact .el-form-item__label:before {
+  content: '';
+  position: absolute;
+  left: -8px;
+  color: #f56c6c;
+  font-size: 12px;
+}
+
+.form-item-compact.is-required .el-form-item__label:before {
+  content: '*';
+}
+
+.form-item-compact .el-form-item__content {
+  margin-left: 0px;
+  line-height: 40px;
+  flex: 1;
+  padding-right: 0;
+}
+
+.form-item-compact .el-input__inner {
+  border-radius: 6px;
+  border: 1px solid #dcdfe6;
+  transition: all 0.3s ease;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  padding: 0 0 0 40px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-item-compact .el-input__inner:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+}
+
+.form-item-compact .el-input__inner:hover {
+  border-color: #c0c4cc;
+}
+
+/* 图标样式 */
+.form-item-compact .el-input__prefix {
+  left: 12px;
+  color: #909399;
+  font-size: 14px;
+  line-height: 40px;
+}
+
+.form-item-compact .el-input__suffix {
+  right: 12px;
+  cursor: pointer;
+  color: #909399;
+  transition: color 0.3s ease;
+  font-size: 14px;
+  line-height: 40px;
+}
+
+.form-item-compact .el-input__suffix:hover {
+  color: #667eea;
+}
+
+/* 注册按钮 */
+.register-button-item {
+  margin-top: 20px;
+  margin-bottom: 12px;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.register-button {
+  width: 100%;
+  height: 42px;
+  font-size: 15px;
+  font-weight: 500;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  transition: all 0.3s ease;
+  border-radius: 21px;
+  color: white;
+}
+
+.register-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+}
+
+.register-button:active {
+  transform: translateY(0);
+}
+
+/* 登录链接 */
+.login-link {
+  text-align: center;
+  font-size: 12px;
+  color: #606266;
+  margin-top: 12px;
+}
+
+.login-link .el-link {
+  font-size: 12px;
+  margin-left: 3px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .register-card {
+    padding: 20px 15px;
+    margin: 5px;
+  }
+
+  .register-title {
+    font-size: 18px;
+  }
+
+  .form-item-compact .el-form-item__label {
+    width: 70px !important;
+    font-size: 11px;
+    text-align: left;
+  }
+
+  .form-item-compact .el-input__inner {
+    height: 36px;
+    line-height: 36px;
+    font-size: 13px;
+    padding: 0 32px 0 35px;
+  }
+
+  .form-item-compact .el-input__prefix {
+    font-size: 13px;
+    left: 8px;
+    line-height: 36px;
+  }
+
+  .form-item-compact .el-input__suffix {
+    font-size: 13px;
+    right: 8px;
+    line-height: 36px;
+  }
+
+  .register-button {
+    height: 32px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .register-wrapper {
+    padding: 5px;
+  }
+
+  .register-card {
+    padding: 18px 12px;
+    border-radius: 10px;
+  }
+
+  .register-header {
+    margin-bottom: 15px;
+  }
+
+  .form-item-compact .el-form-item__label {
+    width: 65px !important;
+    text-align: left;
+  }
+}
+
+/* 小屏幕高度适配 */
+@media (max-height: 700px) {
+  .register-wrapper {
+    padding: 5px;
+  }
+
+  .register-card {
+    padding: 20px 20px;
+  }
+
+  .register-header {
+    margin-bottom: 15px;
+  }
+
+  .form-item-compact {
+    margin-bottom: 10px !important;
+  }
+
+  .register-button-item {
+    margin-top: 15px;
+    margin-bottom: 10px;
+  }
+
+  .form-item-compact .el-form-item__label {
+    width: 75px !important;
+  }
+}
+
+@media (max-height: 600px) {
+  .register-title {
+    font-size: 18px;
+  }
+
+  .register-subtitle {
+    font-size: 11px;
+  }
+
+  .register-card {
+    padding: 15px 18px;
+  }
+}
+
+/* 动画效果 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.register-card {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* 表单错误提示位置调整 */
+.form-item-compact .el-form-item__error {
+  padding-top: 1px;
+  font-size: 10px;
+  line-height: 1.2;
+}
